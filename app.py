@@ -53,6 +53,11 @@ def profile():
         return redirect(url_for('login'))
     return render_template('profile.html')
 
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return render_template('login.html')
+
 @app.route('/')
 def home():
     return "Home"
