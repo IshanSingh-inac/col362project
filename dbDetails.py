@@ -1,4 +1,4 @@
 DBNAME = 'project'
 DBUSER='postgres'
 DBHOST='localhost'
-DBPASSWORD='mypass'
+DBPASSWORD='Kt6kJZLI'

@@ -21,7 +21,7 @@ app.secret_key = 'somesecretkeythatonlyishouldknow'
 @app.before_request
 def before_request():
     g.user = None
-    if session['user_id']:
+    if session and session['user_id']:
         cur.execute("SELECT * from users where id = '{}'".format(session['user_id']))
         items = cur.fetchone()
         g.user = User(id=items[0], username=items[1], gender = items[2], password=items[3])
@@ -58,4 +58,4 @@ def home():
     return "Home"
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug = True)
