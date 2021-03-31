@@ -11,6 +11,7 @@ from flask import (
 import psycopg2
 from models import *
 from dbDetails import *
+from functools import wraps
 
 con = psycopg2.connect(dbname=DBNAME, user=DBUSER, host=DBHOST, password=DBPASSWORD)
 cur = con.cursor()
@@ -24,6 +25,7 @@ def before_request():
     if session and session['user_id']:
         cur.execute("SELECT * from users where id = '{}'".format(session['user_id']))
         items = cur.fetchone()
+        print("Before request executed")
         g.user = User(id=items[0], username=items[1], gender = items[2], password=items[3])
         
         
@@ -56,7 +58,17 @@ def profile():
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
-    return render_template('login.html')
+    return redirect(url_for('login'))
+
+@app.route('/companies')
+def companies():
+    if not g.user:
+        return redirect(url_for('login'))
+    cur.execute("SELECT name from tickers")
+    items = cur.fetchall()
+    items = items[1:5]
+    return render_template('companies.html',items= items)
+    
 
 @app.route('/')
 def home():
