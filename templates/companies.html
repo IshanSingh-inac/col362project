@@ -12,9 +12,16 @@
       <div class="hero-body">
         <div class="container">
         <h1 class="title">Companies</h1>
-          {%for x in items%}
+          {%for ticker,name in companies%}
           <h2 class="subtitle">
-            {{x}}
+          <p><a href="{{ url_for('toggleFavourites',ticker = ticker) }}">{{name}}</a></p>
+          </h2>
+          {%endfor%}
+
+          <h1 class="title">Favourites</h1>
+          {%for ticker,name in fav%}
+          <h2 class="subtitle">
+          <p><a href="{{ url_for('toggleFavourites',ticker = ticker) }}">{{name}}</a></p>
           </h2>
           {%endfor%}
         </div>

@@ -21,8 +21,17 @@ CREATE TABLE stocks(
     constraint ticker_ref foreign key (ticker) references tickers(ticker)
 );
 
+CREATE TABLE favourites(
+    id INTEGER,
+    ticker VARCHAR,
+    constraint fav_key primary key (id,ticker),
+    constraint id_ref foreign key (id) references users(id),
+    constraint ticker_ref foreign key (ticker) references tickers(ticker)
+);
+
 \copy users from './users.csv' delimiter ',' csv header;
 \copy tickers from './tickers.csv' delimiter ',' csv header;
 \copy stocks from './stocks.csv' delimiter ',' csv header;
+\copy favourites from './favourites.csv' delimiter ',' csv header;
 
  

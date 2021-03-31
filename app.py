@@ -64,11 +64,26 @@ def logout():
 def companies():
     if not g.user:
         return redirect(url_for('login'))
-    cur.execute("SELECT name from tickers")
-    items = cur.fetchall()
-    items = items[1:5]
-    return render_template('companies.html',items= items)
+    cur.execute("SELECT * from tickers")
+    companies = cur.fetchall()
+    print(companies)
+    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
+    fav = cur.fetchall()
+    return render_template('companies.html',companies= companies,fav= fav)
     
+@app.route('/toggleFavourites/<string:ticker>')
+def toggleFavourites(ticker):
+    if not g.user:
+        return redirect(url_for('login'))
+    cur.execute("SELECT * from favourites where id = '{}' and ticker = '{}'".format(g.user.id,ticker))
+    items = cur.fetchone()
+    if(not items):
+        cur.execute("INSERT INTO favourites (id,ticker) VALUES(%s,%s)", (g.user.id,ticker))
+        con.commit()
+    else:
+        cur.execute("DELETE FROM favourites WHERE id = %s and ticker = %s", (g.user.id,ticker))
+        con.commit()
+    return redirect(url_for('companies'))
 
 @app.route('/')
 def home():
