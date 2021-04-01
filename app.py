@@ -6,18 +6,25 @@ from flask import (
     request,
     session,
     url_for,
-    flash
+    flash,
+    Response
 )
 import psycopg2
+import random
 from models import *
 from dbDetails import *
 from functools import wraps
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.backends.backend_svg import FigureCanvasSVG
+from matplotlib.figure import Figure
+import io
 
 con = psycopg2.connect(dbname=DBNAME, user=DBUSER, host=DBHOST, password=DBPASSWORD)
 cur = con.cursor()
 
 app = Flask(__name__)
 app.secret_key = 'somesecretkeythatonlyishouldknow'
+ticker_list = [] 
 
 @app.before_request
 def before_request():
@@ -66,10 +73,24 @@ def companies():
         return redirect(url_for('login'))
     cur.execute("SELECT * from tickers")
     companies = cur.fetchall()
-    print(companies)
+    # print(companies)
     cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
     fav = cur.fetchall()
     return render_template('companies.html',companies= companies,fav= fav)
+
+@app.route('/analyze', methods = ['GET', 'POST'])
+def analyze():
+    if not g.user:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        global ticker_list
+        ticker_list = request.form.getlist('mycheckbox')
+        print('ticker list = ',ticker_list)
+        return render_template('graph.html')
+
+    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
+    fav = cur.fetchall()
+    return render_template('analyze.html', fav = fav)
     
 @app.route('/toggleFavourites/<string:ticker>')
 def toggleFavourites(ticker):
@@ -84,6 +105,46 @@ def toggleFavourites(ticker):
         cur.execute("DELETE FROM favourites WHERE id = %s and ticker = %s", (g.user.id,ticker))
         con.commit()
     return redirect(url_for('companies'))
+
+@app.route('/plot.svg')
+def plot_png():
+    fig = create_figure()
+    output = io.BytesIO()
+    FigureCanvasSVG(fig).print_svg(output)
+    return Response(output.getvalue(), mimetype='image/svg+xml')
+
+def create_figure():
+    min_x = 1000000000
+    Y_arr = []
+    global ticker_list
+    for ticker in ticker_list:
+        cur.execute("select close from stocks where ticker = '{}'".format(ticker))
+        close_arr = cur.fetchall()
+        print('close arr = ',close_arr)
+        min_x = min(min_x, len(close_arr))
+        Y_arr.append(close_arr)
+        X_arr = range(min_x)
+
+    fig = Figure()
+    axis = fig.add_subplot(1,1,1)
+    for y in Y_arr:
+        axis.plot(X_arr, y[0:min_x])
+    return fig
+
+# @app.route('/plot.png')
+# def plot_png():
+#     fig = create_figure()
+#     output = io.BytesIO()
+#     FigureCanvas(fig).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
+
+# def create_figure():
+#     fig = Figure()
+#     axis = fig.add_subplot(1, 1, 1)
+    # xs = range(100)
+    # ys = [random.randint(1, 50) for x in xs]
+    # axis.plot(xs, ys)
+    # return fig
 
 @app.route('/')
 def home():
