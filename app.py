@@ -136,6 +136,20 @@ def toggleFavourites(ticker):
         con.commit()
     return redirect(url_for('companies'))
 
+@app.route('/toggleFollowing/<int:id>')
+def toggleFollowing(id):
+    if not g.user:
+        return redirect(url_for('login'))
+    cur.execute("SELECT * from following where id1 = '{}' and id2 = '{}'".format(g.user.id,id))
+    items = cur.fetchone()
+    if(not items):
+        cur.execute("INSERT INTO following (id1,id2) VALUES(%s,%s)",(g.user.id,id))
+        con.commit()
+    else:
+        cur.execute("DELETE FROM following WHERE id1 = %s and id2 = %s", (g.user.id,id))
+        con.commit()
+    return redirect(url_for('following'))
+
 @app.route('/plot.svg')
 def plot_png():
     fig = create_figure()
@@ -204,9 +218,19 @@ def edit_notes(note):
     else:
         return render_template('edit_notes.html', note = note)
 
+@app.route('/following')
+def following():
+    if not g.user:
+        return redirect(url_for('login'))
+    cur.execute("SELECT users.id,users.username from users")
+    users = cur.fetchall()
+    cur.execute("SELECT users.id,users.username from users, following where following.id1 = '{}' and following.id2 = users.id".format(g.user.id))
+    following = cur.fetchall()
+    return render_template('following.html',users= users,following= following,followingFav=[])
+
 @app.route('/')
 def home():
-    return "Home"
+    return redirect(url_for('profile'))
 
 if __name__ == "__main__":
     app.run(debug = True)

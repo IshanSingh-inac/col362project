@@ -11,15 +11,30 @@
    <body>
 
     <section class="hero is-success is-fullheight">
+      <div style="text-align: center;padding:20px;font-size:400%;">
+        <p>Edit Notes <a href="{{url_for('profile')}}"><i class="fas fa-home"></i></a></p>
+        <hr>
+      </div>
         <div class="hero-body">
           <div class="container">
             
             <form  method = "POST">
-                Edit your note here!
-                <br>
-                <input class="input" type="text" name = 'updated_note' value ="{{note}}">
-                <br>
-                <input type = "submit" value = "Save" />
+              <div class="field">
+                <label class="label">Edit your note here!</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input" type="text" name="updated_note" value ="{{note}}" required>
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <p class="control">
+                  <button type="submit" style="background-color:blue" class="button is-success">
+                    Save
+                  </button>
+                </p>
+              </div>
             </form>
         
           </div>

@@ -30,36 +30,57 @@
   <body>
     <section class="hero is-success is-fullheight">
     <div style="text-align: center;padding:20px;font-size:400%;">
-    <p>Manage Your Favourites <a href="{{url_for('profile')}}"><i class="fas fa-home"></i></a></p>
+    <p>Manage Following <a href="{{url_for('profile')}}"><i class="fas fa-home"></i></a></p>
     <hr>
     </div>
     
       <div class="hero-body">
         <div class="container scroll">
-            <h1 class="title" style="color:#174c26">All Companies</h1>
+            <h1 class="title" style="color:#174c26">All Users</h1>
             <hr style="height:10px;background-color:black;width:100%">
-            {%for ticker,name in companies%}
-            <h2 class="subtitle" style="color:black">
-            <p><a href="{{ url_for('toggleFavourites',ticker = ticker) }}">
-                {%if (ticker,name) in fav%}
-                  <i class="fas fa-star"></i>
-                {%else%}
-                  <i class="far fa-star"></i>
-                {%endif%}
-                </a>
-                {{name}}
-                </p>
+            <ul>
+                <li>
+                {%for id,name in users%}
+                <h2 class="subtitle" style="color:black">
+                <p>
+                    <a href="{{ url_for('toggleFollowing',id = id) }}">
+                        {%if (id,name) in following%}
+                        <i class="fas fa-user-times"></i>
+                        {%else%}
+                        <i class="fas fa-user-friends"></i>
+                        {%endif%}
+                    </a>
+                    {{name}}
+                    </p>
+                </h2>
+                <hr>
+                {%endfor%}
+            </ul>
+        </div>
+        <div class="container scroll">
+            <h1 class="title" style="color:#0b035b">Following</h1>
+            <hr style="height:10px;background-color:black;width:100%">
+            {%for id,name in following%}
+            <h2 class="subtitle"  style="color:black">
+            <p>
+            <a href="{{ url_for('toggleFollowing',id = id) }}">
+            <i class="fas fa-user-times"></i>
+            </a>
+            {{name}}
+            </p>
             </h2>
             <hr>
             {%endfor%}
         </div>
+
         <div class="container scroll">
-            <h1 class="title" style="color:#0b035b">Favourites</h1>
+            <h1 class="title" style="color:#0b035b">Your friends like</h1>
             <hr style="height:10px;background-color:black;width:100%">
-            {%for ticker,name in fav%}
+            {%for ticker,name in followingFav%}
             <h2 class="subtitle"  style="color:black">
-            <p><a href="{{ url_for('toggleFavourites',ticker = ticker) }}">
-            <i class="fas fa-trash-alt"></i>
+            <p>
+            <a href="{{ url_for('toggleFavourites',ticker = ticker) }}">
+            <i class="fas fa-user-times"></i>
             </a>
             {{name}}
             </p>
@@ -68,6 +89,9 @@
             {%endfor%}
         </div>
       </div>
+
+      </div>
+
     </section>
   </body>
 </html>

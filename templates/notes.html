@@ -8,26 +8,63 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
+    <style>
+      .blah{
+        color:black;
+        margin:20px;
+        padding:20px;
+        border : solid;
+        background-color:white;
+      }
+    </style>
+
    <body>
 
     <section class="hero is-success is-fullheight">
+      <div style="text-align: center;padding:20px;font-size:400%;">
+        <p>Your Notes <a href="{{url_for('profile')}}"><i class="fas fa-home"></i></a></p>
+        <hr>
+      </div>
+
         <div class="hero-body">
           <div class="container">
-            <form  method = "POST">
-                Write your notes here!
-                <br>
-                <input class="input" type="text" name="Notes" placeholder="Write your note here...">
-                <br>
-                <input type = "submit" value = "Save" />
+            <h1 class="title">Add new note</h1>
+            <form method = "POST">    
+              <div class="field">
+                <label class="label">Write your notes here!</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input" type="text" name="Notes" placeholder="Start writing..." required>
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </div>
+              </div>
+
+              <div class="field">
+                <p class="control">
+                  <button type="submit" style="background-color:blue" class="button is-success">
+                    Add
+                  </button>
+                </p>
+              </div>
             </form>
+
+            <form method="POST">
+              
+              
+            </form>
+
+            <hr>
+            <h1 class="title">Your Notes</h1>
         
-            <h1 class="title">Saved Notes</h1>
             {%for id,note in user_notes%}
-            <h2 class="subtitle">
-            <p>{{note}}</p>
-            <a href = "{{ url_for('remove_notes',note = note) }}"><button>Delete</button></a>
-            <a href = "{{ url_for('edit_notes',note = note) }}"><button>Edit</button></a>
-            </h2>
+            <div class = "blah">
+              <h2 class="subtitle">
+                <p style="color:black">{{note}}</p>
+                <a href = "{{ url_for('remove_notes',note = note) }}"><button>Delete</button></a>
+                <a href = "{{ url_for('edit_notes',note = note) }}"><button>Edit</button></a>
+              </h2>
+            </div>
             {%endfor%}
 
 

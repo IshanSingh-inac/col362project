@@ -7,20 +7,90 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   </head>
+  <style>
+    .tile{
+      background-color:black;
+      padding:80px;
+      border:solid;
+      border-radius:10px;
+      margin:10px;
+    }
+    .hero-body{
+      background-color:#c0d8c8;
+    }
+  </style>
   <body>
     <section class="hero is-success is-fullheight">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title">
-            {{g.user.username}}'s Profile
-          </h1>
-          <h2 class="subtitle">
-            You are user number #{{g.user.id}}
-          </h2>
-          <p><a href="{{ url_for('logout') }}">Logout</a></p>
-          <p><a href="{{ url_for('deleteAccount') }}">Delete Account</a></p>
-        </div>
+      <div style="text-align: center;padding:20px;font-size:400%;">
+        <p>{{g.user.username}}'s Profile</p>
+        <hr>
       </div>
+
+      <div class="hero-body">
+      
+        <div class="container tile" style="background-color:#0c6ed6">
+        <a href="{{url_for('companies')}}">
+          <h1 class="title">
+            <p>Companies <i class="fas fa-building"></i></p>
+          </h1>
+          </a>
+        </div>
+      
+
+      
+        <div class="container tile" style="background-color:#b52462">
+        <a href="{{url_for('following')}}">
+          <h1 class="title">
+            <p>Following <i class="fas fa-user-friends"></i></p>
+          </h1>
+          </a>
+        </div>
+      
+
+        <div class="container tile" style="background-color:#d0d332">
+        <a href="{{url_for('notes')}}">
+          <h1 class="title">
+            <p>Notes <i class="far fa-sticky-note"></i></p>
+          </h1>
+          </a>
+        </div>
+      
+
+      </div>
+
+      <div class="hero-body">
+
+      
+        <div class="container tile" style="background-color:#e56b0d">
+        <a href="{{url_for('analyze')}}">
+          <h1 class="title">
+            <p>Analyze <i class="fas fa-chart-bar"></i></p>
+          </h1>
+          </a>
+        </div>
+      
+      
+        <div class="container tile" style="background-color:#20c407">
+        <a href="{{url_for('logout')}}">
+          <h1 class="title">
+            <p>Sign Out <i class="fas fa-sign-out-alt"></i></p>
+          </h1>
+          </a>
+        </div>
+      
+
+      
+        <div class="container tile" style="background-color:red">
+        <a href="{{url_for('deleteAccount')}}">
+          <h1 class="title">
+            <p>Delete Me <i class="fas fa-trash-alt"></i></p>
+          </h1>
+          </a>
+        </div>
+      
+
+      </div>
+      
     </section>
   </body>
 </html>
