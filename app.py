@@ -56,29 +56,6 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        password2 = request.form['password2']
-        gender = request.form['gender']
-
-        cur.execute("SELECT * from users where username = '{}'".format(username))
-        items = cur.fetchone()
-        if(items):
-            return render_template('signup.html', error="Username already taken")
-        elif(password != password2):
-            return render_template('signup.html', error="Passwords don't match")
-        else:
-            cur.execute("SELECT * from users")
-            items = cur.fetchall()
-            cur.execute("INSERT INTO users (id,username,gender,password) VALUES(%s,%s,%s,%s)", ((len(items))+1,username,gender,password))
-            con.commit()
-            return redirect(url_for('login'))
-
-    return render_template('signup.html')
-
 @app.route('/profile')
 def profile():
     if not g.user:
@@ -148,9 +125,9 @@ def create_figure():
         close_arr = cur.fetchall()
         # print('close arr = ',close_arr)
         Y_arr.append(close_arr)
-        cur.execute("select name from tickers where ticker = '{}'".format(ticker))
-        element = cur.fetchone()
-        legends_arr.append(element)
+        cur.execute("select * from tickers where ticker = '{}'".format(ticker))
+        ticker, comp_name = cur.fetchone()
+        legends_arr.append(comp_name)
 
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
@@ -162,6 +139,40 @@ def create_figure():
     axis.legend(loc = "upper left")
     return fig
 
+@app.route('/notes', methods = ['GET', 'POST'])
+def notes():
+    if not g.user:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        new_notes = request.form['Notes']
+        cur.execute("insert into notes (id,note) VALUES(%s,%s)", (g.user.id,new_notes))
+        con.commit()
+        return redirect(url_for('notes'))
+
+    cur.execute("select * from notes where id = {}".format(g.user.id))
+    user_notes = cur.fetchall()
+    # print('user notes = ',user_notes)
+    return render_template('notes.html', user_notes = user_notes)
+
+@app.route('/remove_notes/<string:note>')
+def remove_notes(note):
+    if not g.user:
+        return redirect(url_for('login'))
+    cur.execute("DELETE FROM notes WHERE id = %s and note = %s", (g.user.id,note))
+    con.commit()
+    return redirect(url_for('notes'))
+
+@app.route('/edit_notes/<string:note>', methods = ['POST', 'GET'])
+def edit_notes(note):
+    if not g.user:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        new_note = request.form['updated_note']
+        cur.execute("update notes set note = %s where notes.id = %s and notes.note = %s", (new_note,g.user.id,note))
+        con.commit()
+        return redirect(url_for('notes'))
+    else:
+        return render_template('edit_notes.html', note = note)
 
 @app.route('/')
 def home():
