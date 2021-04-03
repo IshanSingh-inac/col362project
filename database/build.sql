@@ -29,9 +29,15 @@ CREATE TABLE favourites(
     constraint ticker_ref foreign key (ticker) references tickers(ticker)
 );
 
+create table notes (
+    id integer,
+    note varchar,
+    constraint notes_key primary key (id, note),
+    constraint id_ref foreign key (id) references users(id)
+);
+
 \copy users from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\users.csv' delimiter ',' csv header;
 \copy tickers from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\tickers.csv' delimiter ',' csv header;
 \copy stocks from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\stocks.csv' delimiter ',' csv header;
 \copy favourites from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\favourites.csv' delimiter ',' csv header;
-
- 
+\copy notes from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\notes.csv' delimiter ',' csv header;

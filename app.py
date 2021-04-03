@@ -139,6 +139,29 @@ def create_figure():
     axis.legend(loc = "upper left")
     return fig
 
+@app.route('/notes', methods = ['GET', 'POST'])
+def notes():
+    if not g.user:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        new_notes = request.form['Notes']
+        cur.execute("insert into notes (id,note) VALUES(%s,%s)", (g.user.id,new_notes))
+        con.commit()
+        return redirect(url_for('notes'))
+
+    cur.execute("select * from notes where id = {}".format(g.user.id))
+    user_notes = cur.fetchall()
+    print('user notes = ',user_notes)
+    return render_template('notes.html', user_notes = user_notes)
+
+@app.route('/remove_notes/<string:note>')
+def remove_notes(note):
+    if not g.user:
+        return redirect(url_for('login'))
+    cur.execute("DELETE FROM notes WHERE id = %s and note = %s", (g.user.id,note))
+    con.commit()
+    return redirect(url_for('notes'))
+
 
 @app.route('/')
 def home():
