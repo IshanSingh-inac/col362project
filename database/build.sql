@@ -37,9 +37,19 @@ CREATE TABLE following(
     constraint id2_ref foreign key (id2) references users(id) on delete cascade
 );
 
+create table notes (
+    id integer,
+    note varchar,
+    constraint notes_key primary key (id, note),
+    constraint id_ref foreign key (id) references users(id)
+);
+
+
+
 \copy users from './users.csv' delimiter ',' csv header;
 \copy tickers from './tickers.csv' delimiter ',' csv header;
 \copy stocks from './stocks.csv' delimiter ',' csv header;
 \copy favourites from './favourites.csv' delimiter ',' csv header;
+\copy notes from './notes.csv' delimiter ',' csv header;
 \copy following from './following.csv' delimiter ',' csv header;
  
