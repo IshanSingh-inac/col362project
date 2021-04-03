@@ -1,3 +1,10 @@
+drop table if exists users cascade;
+drop table if exists stocks;
+drop table if exists tickers cascade;
+drop table if exists favourites;
+drop table if exists notes;
+drop table if exists following;
+
 CREATE TABLE users(
     id SERIAL UNIQUE PRIMARY KEY,
     username VARCHAR NOT NULL,
