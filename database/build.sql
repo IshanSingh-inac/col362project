@@ -45,7 +45,6 @@ create table notes (
 );
 
 
-
 \copy users from './users.csv' delimiter ',' csv header;
 \copy tickers from './tickers.csv' delimiter ',' csv header;
 \copy stocks from './stocks.csv' delimiter ',' csv header;
