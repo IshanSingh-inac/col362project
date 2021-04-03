@@ -67,6 +67,26 @@
             <hr>
             {%endfor%}
         </div>
+
+        <div class="container scroll">
+          <h1 class="title" style="color:red">Trending</h1>
+          <hr style="height:10px;background-color:black;width:100%">
+          {%for ticker,name in trend%}
+          <h2 class="subtitle" style="color:black">
+          <p><a href="{{ url_for('toggleFavourites',ticker = ticker) }}">
+              {%if (ticker,name) in fav%}
+                <i class="fas fa-star" style="color:red"></i>
+              {%else%}
+                <i class="far fa-star" style="color:red"></i>
+              {%endif%}
+              </a>
+              {{name}}
+              </p>
+          </h2>
+          <hr>
+          {%endfor%}
+      </div>
+
       </div>
     </section>
   </body>

@@ -33,7 +33,8 @@ def before_request():
         cur.execute("SELECT * from users where id = '{}'".format(session['user_id']))
         items = cur.fetchone()
         print("Before request executed")
-        g.user = User(id=items[0], username=items[1], gender = items[2], password=items[3])
+        if (items):
+            g.user = User(id=items[0], username=items[1], gender = items[2], password=items[3])
         
         
 
@@ -106,7 +107,17 @@ def companies():
     # print(companies)
     cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
     fav = cur.fetchall()
-    return render_template('companies.html',companies= companies,fav= fav)
+    cur.execute("with trending_companies(ticker, name) as \
+        (\
+            select tickers.ticker, tickers.name\
+            from favourites, tickers\
+            where favourites.ticker = tickers.ticker \
+            group by tickers.ticker, tickers.name \
+            order by count(favourites.id) desc, tickers.name asc\
+        )\
+        select * from trending_companies limit 10")
+    trend = cur.fetchall()
+    return render_template('companies.html',companies= companies,fav= fav, trend = trend)
 
 @app.route('/analyze', methods = ['GET', 'POST'])
 def analyze():
@@ -149,6 +160,24 @@ def toggleFollowing(id):
         cur.execute("DELETE FROM following WHERE id1 = %s and id2 = %s", (g.user.id,id))
         con.commit()
     return redirect(url_for('following'))
+
+@app.route('/trending')
+def trending():
+    if not g.user:
+        return redirect(url_for('login'))
+    cur.execute("with trending_companies(ticker, name) as \
+        (\
+            select tickers.ticker, tickers.name\
+            from favourites, tickers\
+            where favourites.ticker = tickers.ticker \
+            group by tickers.ticker, tickers.name \
+            order by count(favourites.id) desc, tickers.name asc\
+        )\
+        select * from trending_companies limit 10")
+    items = cur.fetchall()
+    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
+    fav = cur.fetchall()
+    return render_template('trending.html', trend = items, fav = fav)
 
 @app.route('/plot.svg')
 def plot_png():
