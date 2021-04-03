@@ -108,7 +108,7 @@ def analyze():
     if request.method == 'POST':
         global ticker_list
         ticker_list = request.form.getlist('mycheckbox')
-        print('ticker list = ',ticker_list)
+        # print('ticker list = ',ticker_list)
         return render_template('graph.html')
 
     cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
@@ -137,37 +137,31 @@ def plot_png():
     return Response(output.getvalue(), mimetype='image/svg+xml')
 
 def create_figure():
-    min_x = 1000000000
     Y_arr = []
+    X_arr = []
+    legends_arr = []
     global ticker_list
+    cur.execute("select date from stocks where ticker = '{}'".format(ticker_list[0]))
+    X_arr = cur.fetchall()
     for ticker in ticker_list:
         cur.execute("select close from stocks where ticker = '{}'".format(ticker))
         close_arr = cur.fetchall()
-        print('close arr = ',close_arr)
-        min_x = min(min_x, len(close_arr))
+        # print('close arr = ',close_arr)
         Y_arr.append(close_arr)
-        X_arr = range(min_x)
+        cur.execute("select name from tickers where ticker = '{}'".format(ticker))
+        element = cur.fetchone()
+        legends_arr.append(element)
 
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
-    for y in Y_arr:
-        axis.plot(X_arr, y[0:min_x])
+    fig.suptitle('Stocks Analysis')
+    axis.set_xlabel('Date (in year)')
+    axis.set_ylabel('Closing value')
+    for i in range(len(Y_arr)):
+        axis.plot(X_arr, Y_arr[i], label = legends_arr[i])
+    axis.legend(loc = "upper left")
     return fig
 
-# @app.route('/plot.png')
-# def plot_png():
-#     fig = create_figure()
-#     output = io.BytesIO()
-#     FigureCanvas(fig).print_png(output)
-#     return Response(output.getvalue(), mimetype='image/png')
-
-# def create_figure():
-#     fig = Figure()
-#     axis = fig.add_subplot(1, 1, 1)
-    # xs = range(100)
-    # ys = [random.randint(1, 50) for x in xs]
-    # axis.plot(xs, ys)
-    # return fig
 
 @app.route('/')
 def home():
