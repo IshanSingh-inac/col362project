@@ -1,5 +1,5 @@
 CREATE TABLE users(
-    id SERIAL PRIMARY KEY,
+    id SERIAL UNIQUE PRIMARY KEY,
     username VARCHAR NOT NULL,
     gender VARCHAR NOT NULL,
     password VARCHAR NOT NULL
@@ -29,9 +29,9 @@ CREATE TABLE favourites(
     constraint ticker_ref foreign key (ticker) references tickers(ticker)
 );
 
-\copy users from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\users.csv' delimiter ',' csv header;
-\copy tickers from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\tickers.csv' delimiter ',' csv header;
-\copy stocks from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\stocks.csv' delimiter ',' csv header;
-\copy favourites from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\favourites.csv' delimiter ',' csv header;
+\copy users from './users.csv' delimiter ',' csv header;
+\copy tickers from './tickers.csv' delimiter ',' csv header;
+\copy stocks from './stocks.csv' delimiter ',' csv header;
+\copy favourites from './favourites.csv' delimiter ',' csv header;
 
  
