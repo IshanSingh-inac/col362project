@@ -265,4 +265,4 @@ def home():
     return redirect(url_for('profile'))
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(port=5010, debug = True)
