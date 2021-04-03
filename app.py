@@ -13,6 +13,7 @@ import psycopg2
 import random
 from models import *
 from dbDetails import *
+from bigQuery import *
 from functools import wraps
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.backends.backend_svg import FigureCanvasSVG
@@ -255,7 +256,9 @@ def following():
     users = cur.fetchall()
     cur.execute("SELECT users.id,users.username from users, following where following.id1 = '{}' and following.id2 = users.id".format(g.user.id))
     following = cur.fetchall()
-    return render_template('following.html',users= users,following= following,followingFav=[])
+    cur.execute(followingFavQuery.format(g.user.id))
+    followingFav = cur.fetchall()
+    return render_template('following.html',users= users,following= following,followingFav=followingFav)
 
 @app.route('/')
 def home():
