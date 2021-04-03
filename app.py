@@ -125,9 +125,9 @@ def create_figure():
         close_arr = cur.fetchall()
         # print('close arr = ',close_arr)
         Y_arr.append(close_arr)
-        cur.execute("select name from tickers where ticker = '{}'".format(ticker))
-        element = cur.fetchone()
-        legends_arr.append(element)
+        cur.execute("select * from tickers where ticker = '{}'".format(ticker))
+        ticker, comp_name = cur.fetchone()
+        legends_arr.append(comp_name)
 
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
