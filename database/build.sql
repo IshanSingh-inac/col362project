@@ -45,12 +45,6 @@ create table notes (
 );
 
 
--- \copy users from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\users.csv' delimiter ',' csv header;
--- \copy tickers from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\tickers.csv' delimiter ',' csv header;
--- \copy stocks from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\stocks.csv' delimiter ',' csv header;
--- \copy favourites from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\favourites.csv' delimiter ',' csv header;
--- \copy notes from 'C:\\Users\\DELL\\Documents\\GitHub\\col362project\\database\\notes.csv' delimiter ',' csv header;
-
 \copy users from './users.csv' delimiter ',' csv header;
 \copy tickers from './tickers.csv' delimiter ',' csv header;
 \copy stocks from './stocks.csv' delimiter ',' csv header;
