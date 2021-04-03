@@ -56,6 +56,29 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        password2 = request.form['password2']
+        gender = request.form['gender']
+
+        cur.execute("SELECT * from users where username = '{}'".format(username))
+        items = cur.fetchone()
+        if(items):
+            return render_template('signup.html', error="Username already taken")
+        elif(password != password2):
+            return render_template('signup.html', error="Passwords don't match")
+        else:
+            cur.execute("SELECT * from users")
+            items = cur.fetchall()
+            cur.execute("INSERT INTO users (id,username,gender,password) VALUES(%s,%s,%s,%s)", ((len(items))+1,username,gender,password))
+            con.commit()
+            return redirect(url_for('login'))
+
+    return render_template('signup.html')
+
 @app.route('/profile')
 def profile():
     if not g.user:
