@@ -41,7 +41,7 @@ create table notes (
     id integer,
     note varchar,
     constraint notes_key primary key (id, note),
-    constraint id_ref foreign key (id) references users(id)
+    constraint id_ref foreign key (id) references users(id) on delete cascade
 );
 
 

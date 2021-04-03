@@ -79,6 +79,13 @@ def signup():
 
     return render_template('signup.html')
 
+@app.route('/deleteAccount')
+def deleteAccount():
+    cur.execute("DELETE FROM users WHERE id = '{}'".format(g.user.id))
+    con.commit()
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
 @app.route('/profile')
 def profile():
     if not g.user:
