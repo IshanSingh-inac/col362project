@@ -166,9 +166,9 @@ def toggleFollowing(id):
 def trending():
     if not g.user:
         return redirect(url_for('login'))
-    cur.execute("with trending_companies(ticker, name) as \
+    cur.execute("with trending_companies(ticker, name, count) as \
         (\
-            select tickers.ticker, tickers.name\
+            select tickers.ticker, tickers.name, count(favourites.id)\
             from favourites, tickers\
             where favourites.ticker = tickers.ticker \
             group by tickers.ticker, tickers.name \
