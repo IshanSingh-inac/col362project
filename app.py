@@ -151,7 +151,7 @@ def notes():
 
     cur.execute("select * from notes where id = {}".format(g.user.id))
     user_notes = cur.fetchall()
-    print('user notes = ',user_notes)
+    # print('user notes = ',user_notes)
     return render_template('notes.html', user_notes = user_notes)
 
 @app.route('/remove_notes/<string:note>')
@@ -162,6 +162,17 @@ def remove_notes(note):
     con.commit()
     return redirect(url_for('notes'))
 
+@app.route('/edit_notes/<string:note>', methods = ['POST', 'GET'])
+def edit_notes(note):
+    if not g.user:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        new_note = request.form['updated_note']
+        cur.execute("update notes set note = %s where notes.id = %s and notes.note = %s", (new_note,g.user.id,note))
+        con.commit()
+        return redirect(url_for('notes'))
+    else:
+        return render_template('edit_notes.html', note = note)
 
 @app.route('/')
 def home():
