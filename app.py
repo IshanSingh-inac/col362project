@@ -103,10 +103,10 @@ def logout():
 def companies():
     if not g.user:
         return redirect(url_for('login'))
-    cur.execute("SELECT * from tickers")
+    cur.execute("SELECT ticker, name from tickers order by name asc")
     companies = cur.fetchall()
     # print(companies)
-    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
+    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker order by tickers.name asc".format(g.user.id))
     fav = cur.fetchall()
     cur.execute("with trending_companies(ticker, name) as \
         (\
@@ -130,7 +130,7 @@ def analyze():
         # print('ticker list = ',ticker_list)
         return render_template('graph.html')
 
-    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
+    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker order by tickers.name asc".format(g.user.id))
     fav = cur.fetchall()
     return render_template('analyze.html', fav = fav)
     
@@ -176,7 +176,7 @@ def trending():
         )\
         select * from trending_companies limit 10")
     items = cur.fetchall()
-    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker".format(g.user.id))
+    cur.execute("SELECT tickers.ticker,tickers.name from favourites,tickers where favourites.id = '{}' and favourites.ticker = tickers.ticker order by tickers.name asc".format(g.user.id))
     fav = cur.fetchall()
     return render_template('trending.html', trend = items, fav = fav)
 
@@ -223,7 +223,7 @@ def notes():
         con.commit()
         return redirect(url_for('notes'))
 
-    cur.execute("select * from notes where id = {}".format(g.user.id))
+    cur.execute("select * from notes where id = {} order by note asc".format(g.user.id))
     user_notes = cur.fetchall()
     # print('user notes = ',user_notes)
     return render_template('notes.html', user_notes = user_notes)
@@ -252,9 +252,9 @@ def edit_notes(note):
 def following():
     if not g.user:
         return redirect(url_for('login'))
-    cur.execute("SELECT users.id,users.username from users")
+    cur.execute("SELECT users.id,users.username from users where users.id <> '{}' order by users.username".format(g.user.id))
     users = cur.fetchall()
-    cur.execute("SELECT users.id,users.username from users, following where following.id1 = '{}' and following.id2 = users.id".format(g.user.id))
+    cur.execute("SELECT users.id,users.username from users, following where following.id1 = '{}' and following.id2 = users.id order by users.username".format(g.user.id))
     following = cur.fetchall()
     cur.execute(followingFavQuery.format(g.user.id))
     followingFav = cur.fetchall()
