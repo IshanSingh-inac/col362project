@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pip install flask
-pip install psycopg2
-pip install flask-login
-pip install matplotlib
+pip3 install flask
+pip3 install psycopg2
+pip3 install flask-login
+pip3 install matplotlib
