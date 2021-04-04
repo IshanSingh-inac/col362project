@@ -1,4 +1,4 @@
-DBNAME = 'project'
-DBUSER='postgres'
-DBHOST='localhost'
-DBPASSWORD='@gungun@'
+DBNAME = 'group_10'
+DBUSER='group_10'
+DBHOST='10.17.50.232'
+DBPASSWORD='tqMtApGvsE5Bw'
